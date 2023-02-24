@@ -31,6 +31,9 @@ export default function DownloadButton({ products }: Props) {
       }}
       type="button"
       icon="pi pi-download"
+      label="Salvar"
+      tooltip="Baixa e salva os dados da tabela em um arquivo CSV."
+      tooltipOptions={{ position: "left" }}
       text
     />
   )

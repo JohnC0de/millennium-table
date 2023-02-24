@@ -2,24 +2,13 @@ import { useQuery } from "@tanstack/react-query"
 import axios from "axios"
 
 import { Button } from "primereact/button"
-import { DataTable } from "primereact/datatable"
-import { ColumnGroup } from "primereact/columngroup"
-import { Row } from "primereact/row"
 import { Column } from "primereact/column"
-import { Skeleton } from "primereact/skeleton"
-import { useState } from "react"
-import { Product } from "./types"
+import { DataTable } from "primereact/datatable"
 import DownloadButton from "./components/DownloadButton"
-import RefreshQueryButton from "./components/DownloadButton copy"
-
-const productExample: Product = {
-  cod_produto: "Carregando...",
-  descricao: null,
-  fase: "Carregando...",
-  data_previsto: "Carregando..."
-}
-
-const productsSkeletonArray = Array(10).fill(productExample)
+import RefreshQueryButton from "./components/RefreshQueryButton"
+import { Toast } from "primereact/toast"
+import { Product } from "./types"
+import { useRef } from "react"
 
 const getProducts = async () => {
   const response = await axios.get<{ value: Product[] }>(
@@ -48,34 +37,40 @@ export default function App() {
     queryFn: getProducts
   })
 
+  const toast = useRef(null)
+
+  const showError = () => {
+    toast.current.show({
+      severity: "error",
+      summary: "Error",
+      detail: "Message Content",
+      life: 3000
+    })
+  }
+
   if (queryProducts.isLoading) {
     return (
       <div className="flex flex-col h-screen flex-1  items-center">
-        <div className="container h-screen">
-          <Skeleton width="100%" height="2rem" />
-          <Skeleton width="100%" height="2rem" />
-          <Skeleton width="100%" height="2rem" />
-          <Skeleton width="100%" height="2rem" />
-          <Skeleton width="100%" height="2rem" />
-          <Skeleton width="100%" height="2rem" />
-          <Skeleton width="100%" height="2rem" />
-          <Skeleton width="100%" height="2rem" />
-          <Skeleton width="100%" height="2rem" />
-          <Skeleton width="100%" height="2rem" />
+        <div className="container flex justify-center items-center">
+          <h1>Please wait while we load the products...</h1>
         </div>
       </div>
     )
   }
 
   if (queryProducts.isError) {
+    showError()
     return (
       <div className="flex flex-col h-screen flex-1  items-center">
-        <div className="container h-screen">
+        <div className="container flex flex-col min-h-screen flex-1">
           <div className="text-center">
             <h1>Erro ao carregar os produtos</h1>
+            <Toast ref={toast} />
             <Button
               label="Tentar novamente"
-              onClick={() => queryProducts.refetch()}
+              onClick={() => {
+                queryProducts.refetch()
+              }}
             />
           </div>
         </div>
@@ -90,20 +85,21 @@ export default function App() {
   )
 
   return (
-    <div className="flex flex-col h-screen flex-1  items-center">
-      <div className="container h-screen">
+    <div className="flex flex-col min-h-screen bg-slate-100 flex-1 backsvg items-center">
+      <div className="container">
         <DataTable
+          className="my-8"
           key="id"
-          value={queryProducts.data?.products ?? productsSkeletonArray}
+          value={queryProducts.data?.products}
           paginator
-          rowsPerPageOptions={[10, 25, 50]}
+          rowsPerPageOptions={[15, 25, 50]}
           paginatorTemplate="RowsPerPageDropdown FirstPageLink PrevPageLink CurrentPageReport NextPageLink LastPageLink"
           currentPageReportTemplate="{first} to {last} of {totalRecords}"
           paginatorLeft={<RefreshQueryButton query={queryProducts} />}
           paginatorRight={
             <DownloadButton products={queryProducts.data?.products} />
           }
-          rows={10}
+          rows={15}
           header={header}
           size="small"
           stripedRows
@@ -121,13 +117,17 @@ export default function App() {
             alignHeader={"center"}
             filter
             filterMatchMode="contains"
+            filterPlaceholder="Pesquisar por nome"
+            sortable
           />
           <Column
             align="center"
             field="fase"
             header="Fase Atual"
             filter
+            filterPlaceholder="Pesquisar por fase"
             headerClassName="text-center bg-red-500"
+            sortable
           />
           <Column
             align="center"
@@ -135,6 +135,17 @@ export default function App() {
             header="Data prevista"
             filter
             filterType="date"
+            sortable
+            body={isExpired =>
+              isExpired.data_previsto <
+              new Date().toLocaleDateString("pt-BR") ? (
+                <span className="font-semibold bg-red-300/50 rounded-2xl p-1 text-red-600">
+                  {isExpired.data_previsto}
+                </span>
+              ) : (
+                <span>{isExpired.data_previsto}</span>
+              )
+            }
           />
         </DataTable>
       </div>
