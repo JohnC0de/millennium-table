@@ -37,9 +37,10 @@ export default function App() {
     queryFn: getProducts
   })
 
-  const toast = useRef(null)
+  const toast = useRef<Toast>(null)
 
   const showError = () => {
+    if (!toast.current) return
     toast.current.show({
       severity: "error",
       summary: "Error",

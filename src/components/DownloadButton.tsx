@@ -1,11 +1,25 @@
 import { Button } from "primereact/button"
+import { useRef } from "react"
 import { Product } from "../types"
+import { Toast } from "primereact/toast"
 
 type Props = {
   products: Product[]
 }
 
 export default function DownloadButton({ products }: Props) {
+  const toast = useRef<Toast>(null)
+
+  const showInfo = () => {
+    if (!toast.current) return
+    toast.current.show({
+      severity: "info",
+      summary: "Salvando...",
+      detail: "Os dados da tabela estão sendo salvos.",
+      life: 2000
+    })
+  }
+
   return (
     <Button
       onClick={() => {

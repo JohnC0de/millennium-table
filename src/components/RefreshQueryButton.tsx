@@ -7,13 +7,14 @@ type Props = {
 }
 
 export default function RefreshQueryButton({ query }: Props) {
-  const toast = useRef(null)
+  const toast = useRef<Toast>(null)
 
   const showInfo = () => {
+    if (!toast.current) return
     toast.current.show({
       severity: "info",
       summary: "Atualizando...",
-      detail: "Aguarde, os dados da tabela estão sendo atualizados.",
+      detail: "Os dados da tabela estão sendo atualizados.",
       life: 2000
     })
   }
