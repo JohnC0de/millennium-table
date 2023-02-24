@@ -8,3 +8,7 @@
   background-attachment: fixed;
   background-size: cover;
 }
+
+td {
+  text-transform: capitalize;
+}
