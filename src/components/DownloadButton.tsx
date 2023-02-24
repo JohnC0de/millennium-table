@@ -1,7 +1,6 @@
 import { Button } from "primereact/button"
-import { useRef } from "react"
-import { Product } from "../types"
 import { Toast } from "primereact/toast"
+import { useRef } from "react"
 import { ProductWithoutDescription } from "../App"
 
 type Props = {
@@ -24,6 +23,7 @@ export default function DownloadButton({ products }: Props) {
   return (
     <Button
       onClick={() => {
+        showInfo()
         const csv = products
           .map(product => {
             return `${product.cod_produto};${product.fase};${product.data_previsto}`
