@@ -10,8 +10,10 @@ import { Toast } from "primereact/toast"
 import { Product } from "./types"
 import { useRef } from "react"
 
+export type ProductWithoutDescription = Omit<Product, "descricao">
+
 const getProducts = async () => {
-  const response = await axios.get<{ value: Product[] }>(
+  const response = await axios.get<{ value: ProductWithoutDescription[] }>(
     "https://lli76r4rajt2eqe7zbris4v76m0dlizi.lambda-url.sa-east-1.on.aws/"
   )
 
@@ -25,7 +27,11 @@ const getProducts = async () => {
       .replace("/Date(", "")
       .replace(")/", "")
     const date = new Date(parseInt(unformatedDate)).toLocaleDateString("pt-BR")
-    return { ...product, data_previsto: date }
+    return {
+      cod_produto: product.cod_produto.toLowerCase(),
+      fase: product.fase.toLowerCase(),
+      data_previsto: date
+    }
   })
 
   return { products, phases }
@@ -81,7 +87,7 @@ export default function App() {
 
   const header = (
     <div className="text-center table-header">
-      <h5>Fases dos produtos</h5>
+      <h5 className="font-bold text-lg">Fases dos produtos</h5>
     </div>
   )
 
@@ -133,7 +139,7 @@ export default function App() {
           <Column
             align="center"
             field="data_previsto"
-            header="Data prevista"
+            header="Data Prevista"
             filter
             filterType="date"
             sortable
