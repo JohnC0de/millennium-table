@@ -23,17 +23,7 @@ const productsSkeletonArray = Array(10).fill(productExample)
 
 const getProducts = async () => {
   const response = await axios.get<{ value: Product[] }>(
-    "http://179.124.195.83:6017/api/MILLENIUM!PRD.PRODUCAO.PRODUTOFASES",
-    {
-      headers: {
-        "Content-Type": "application/json",
-        "WTS-LicenceType": "WTS"
-      },
-      auth: {
-        username: "integracao",
-        password: "79Kkmw2"
-      }
-    }
+    "https://lli76r4rajt2eqe7zbris4v76m0dlizi.lambda-url.sa-east-1.on.aws/"
   )
 
   const phases: string[] = []
