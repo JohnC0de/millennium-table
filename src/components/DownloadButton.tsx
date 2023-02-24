@@ -2,9 +2,10 @@ import { Button } from "primereact/button"
 import { useRef } from "react"
 import { Product } from "../types"
 import { Toast } from "primereact/toast"
+import { ProductWithoutDescription } from "../App"
 
 type Props = {
-  products: Product[]
+  products: ProductWithoutDescription[]
 }
 
 export default function DownloadButton({ products }: Props) {
