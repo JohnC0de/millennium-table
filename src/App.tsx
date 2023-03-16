@@ -14,7 +14,7 @@ export type ProductWithoutDescription = Omit<Product, "descricao">
 
 const getProducts = async () => {
   const response = await axios.get<{ value: ProductWithoutDescription[] }>(
-    "https://lli76r4rajt2eqe7zbris4v76m0dlizi.lambda-url.sa-east-1.on.aws/"
+    "https://kg2jx3nlf3i537ieyovstv3aay0iwzut.lambda-url.sa-east-1.on.aws/"
   )
 
   const phases: string[] = []
